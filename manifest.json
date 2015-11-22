@@ -1,0 +1,17 @@
+{
+    "name": "planarity.rschroll",
+    "description": "description of planarity",
+    "architecture": "all",
+    "title": "planarity",
+    "hooks": {
+        "planarity": {
+            "apparmor": "planarity.apparmor",
+            "desktop":  "planarity.desktop"
+        }
+    },
+    "version": "0.1",
+    "maintainer": "Robert Schroll <rschroll@gmail.com>",
+    "framework" : "ubuntu-sdk-15.04"
+}
+
+
