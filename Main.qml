@@ -56,27 +56,26 @@ MainView {
                 countIntersections()
             }
 
+            function findIntersect(x1, y1, dx1, dy1, x2, y2, dx2, dy2) {
+                // Algorithm from http://stackoverflow.com/a/565282
+                var denom = dx1 * dy2 - dx2 * dy1
+                if (denom == 0)
+                    //Lines are parallel, or one isn't actually a line
+                    return []
+                return [((x2 - x1) * dy2 - (y2 - y1) * dx2) / denom,
+                        ((x2 - x1) * dy1 - (y2 - y1) * dx1) / denom]
+            }
+
             function intersect(e1, e2) {
                 // Don't count intersections at vertices
                 if (e1.v1 === e2.v1 || e1.v1 === e2.v2 || e1.v2 === e2.v1 || e1.v2 === e2.v2)
                     return false
 
-                // Algorithm from http://stackoverflow.com/a/565282
-                var a1 = e1.v1.x,
-                        b1 = e1.v1.y,
-                        c1 = e1.v2.x,
-                        d1 = e1.v2.y,
-                        a2 = e2.v1.x,
-                        b2 = e2.v1.y,
-                        c2 = e2.v2.x,
-                        d2 = e2.v2.y,
-                        denom = (c1 - a1) * (d2 - b2) - (c2 - a2) * (d1 - b1)
-                if (denom == 0)
-                    // Lines are parallel, or one isn't actually a line
+                var ints = findIntersect(e1.v1.x, e1.v1.y, e1.v2.x - e1.v1.x, e1.v2.y - e1.v1.y,
+                                         e2.v1.x, e2.v1.y, e2.v2.x - e2.v1.x, e2.v2.y - e2.v1.y)
+                if (ints.length != 2)
                     return false
-                var t1 = ((a2 - a1) * (d2 - b2) - (b2 - b1) * (c2 - a2)) / denom,
-                        t2 = ((a2 - a1) * (d1 - b1) - (b2 - b1) * (c1 - a1)) /denom
-                return (0 <= t1 && t1 <= 1 && 0 <= t2 && t2 <= 1)
+                return (0 <= ints[0] && ints[0] <= 1 && 0 <= ints[1] && ints[1] <= 1)
             }
 
             function countIntersections() {
@@ -92,8 +91,64 @@ MainView {
                 countIntersections()
             }
 
-            Component.onCompleted: createGraph([[0,0], [100,0], [0, 100], [100, 100]],
-                                               [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]])
+            function generateGraph(n) {
+                var origins = [],
+                        dirs = [],
+                        vertices = [],
+                        k = 0;
+                for (var i=0; i<n; i++) {
+                    var x = Math.random(),
+                            y = Math.random(),
+                            q = Math.random() * 2 * Math.PI,
+                            dx = Math.cos(q),
+                            dy = Math.sin(q)
+                    origins.push([x, y])
+                    dirs.push([dx, dy])
+                    vertices.push([])
+                    for (var j=0; j<i; j++) {
+                        var arclengths = findIntersect(x, y, dx, dy,
+                                                       origins[j][0], origins[j][1], dirs[j][0], dirs[j][1])
+                        vertices[i].push([arclengths[0], k])
+                        vertices[j].push([arclengths[1], k])
+                        k += 1
+                    }
+                }
+
+                var edges = []
+                for (var i=0; i<n; i++) {
+                    var verts = vertices[i]
+                    verts.sort(function (a,b) { return a[0] - b[0] })
+                    for (var j=0; j<verts.length-1; j++)
+                        edges.push([verts[j][1], verts[j+1][1]])
+                }
+                return edges
+            }
+
+            function circleVerts(n) {
+                var verts = [],
+                        cx = board.width/2,
+                        cy = board.height/2,
+                        rad = Math.min(cx, cy) * 0.5
+                for (var i=0; i<n; i++) {
+                    var q = 2 * Math.PI * i / n
+                    verts.push([rad * Math.cos(q) + cx, rad * Math.sin(q) + cy])
+                }
+
+                // Shuffle from http://stackoverflow.com/a/12646864
+                for (var i=n-1; i>0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1))
+                    var temp = verts[i]
+                    verts[i] = verts[j]
+                    verts[j] = temp
+                }
+
+                return verts
+            }
+
+            Component.onCompleted: {
+                var n = 10
+                createGraph(circleVerts(n * (n - 1) / 2), generateGraph(n))
+            }
 
             Label {
                 text: board.intersections
