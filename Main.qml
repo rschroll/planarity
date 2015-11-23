@@ -61,6 +61,7 @@ MainView {
                 if (e1.v1 === e2.v1 || e1.v1 === e2.v2 || e1.v2 === e2.v1 || e1.v2 === e2.v2)
                     return false
 
+                // Algorithm from http://stackoverflow.com/a/565282
                 var a1 = e1.v1.x,
                         b1 = e1.v1.y,
                         c1 = e1.v2.x,
@@ -69,16 +70,13 @@ MainView {
                         b2 = e2.v1.y,
                         c2 = e2.v2.x,
                         d2 = e2.v2.y,
-                        denom = (c2 - a2) * (d1 - b1) - (c1 - a1) * (d2 - b2)
+                        denom = (c1 - a1) * (d2 - b2) - (c2 - a2) * (d1 - b1)
                 if (denom == 0)
                     // Lines are parallel, or one isn't actually a line
                     return false
-                var x = ((c1 - a1) * (c2*b2 - d2*a2) - (c2 - a2) * (c1*b1 - d1*a1)) / denom,
-                        y = ((d1 - b1) * (c2*b2 - d2*a2) - (d2 - b2) * (c1*b1 - d1*a1)) / denom
-                return ((a1 != c1) ? Math.min(a1,c1) <= x && x <= Math.max(a1,c1)
-                                   : Math.min(b1,d1) <= y && y <= Math.max(b1,d1)) &&
-                        ((a2 != c2) ? Math.min(a2,c2) <= x && x <= Math.max(a2,c2)
-                                    : Math.min(b2,d2) <= y && y <= Math.max(b2,d2))
+                var t1 = ((a2 - a1) * (d2 - b2) - (b2 - b1) * (c2 - a2)) / denom,
+                        t2 = ((a2 - a1) * (d1 - b1) - (b2 - b1) * (c1 - a1)) /denom
+                return (0 <= t1 && t1 <= 1 && 0 <= t2 && t2 <= 1)
             }
 
             function countIntersections() {
