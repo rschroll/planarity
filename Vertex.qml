@@ -2,18 +2,14 @@ import QtQuick 2.0
 import Ubuntu.Components 1.1
 
 
-Rectangle {
+Item {
     id: vertex
 
-    property int size: units.gu(2)
+    property int size: units.gu(3)
     property var edges: []
 
     width: size
     height: size
-    radius: size/2
-    color: "blue"
-    border.color: "black"
-    border.width: units.dp(1)
     z: 2
 
     MouseArea {
@@ -33,19 +29,34 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        id: rect
+
+        property int size: units.gu(2)
+
+        width: size
+        height: size
+        radius: size/2
+        x: (vertex.size - size) / 2
+        y: (vertex.size - size) / 2
+        color: "blue"
+        border.color: "black"
+        border.width: units.dp(1)
+    }
+
     states: [
         State {
             name: "Selected"
             when: mouseArea.pressed
             PropertyChanges {
-                target: vertex
+                target: rect
                 color: "white"
             }
         },
         State {
             name: "Neighbor"
             PropertyChanges {
-                target: vertex
+                target: rect
                 color: "red"
             }
         }
