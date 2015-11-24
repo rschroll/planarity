@@ -5,22 +5,28 @@ import Ubuntu.Components 1.1
 Item {
     id: vertex
 
-    property int size: units.gu(3)
+    property double size: units.gu(3)
     property var edges: []
 
     width: size
     height: size
     z: 2
+    scale: 1 / board.scale
+    transform: Translate {
+        x: -size / 2
+        y: -size / 2
+    }
 
     MouseArea {
         id: mouseArea
         anchors.fill: vertex
         drag {
             target: vertex
-            minimumX: 0
-            minimumY: 0
-            maximumX: board.width - vertex.size
-            maximumY: board.height - vertex.size
+            minimumX: vertex.size / 2
+            minimumY: vertex.size / 2
+            maximumX: board.width - vertex.size / 2
+            maximumY: board.height - vertex.size / 2
+            threshold: 0
         }
 
         drag.onActiveChanged: {
@@ -32,7 +38,7 @@ Item {
     Rectangle {
         id: rect
 
-        property int size: units.gu(2)
+        property double size: units.gu(2)
 
         width: size
         height: size

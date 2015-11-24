@@ -9,9 +9,9 @@ Rectangle {
     property var v2
     
     width: Math.sqrt((v1.x - v2.x)*(v1.x - v2.x) + (v1.y - v2.y)*(v1.y - v2.y))
-    height: units.dp(2)
-    x: v1.x + v1.size/2
-    y: v1.y + v1.size/2 - height/2
+    height: units.dp(2) / board.scale
+    x: v1.x
+    y: v1.y - height/2
     z: 1
     color: "#aaaaaa"
     transform: Rotation {
