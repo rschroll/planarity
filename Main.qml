@@ -65,36 +65,131 @@ MainView {
                 color: "#80ffffff"
             }
 
-            FloatingButton {
-                anchors.left: parent.left
-                buttons: [
-                    Action {
-                        iconName: "reload"
-                        onTriggered: board.reset()
-                    },
-                    Action {
-                        id: generateAction
-                        iconName: board.intersections ? "media-playlist-shuffle" : "media-playback-start"
-                        onTriggered: board.generate(orderPicker.selectedIndex + orderPicker.min)
+            UbuntuShape {
+                id: buttonContainer
+                anchors {
+                    left: parent.left
+                    leftMargin: units.gu(1)
+                    top: parent.top
+                    topMargin: units.gu(1)
+                    bottom: parent.bottom
+                    bottomMargin: units.gu(1)
+                }
+                width: units.gu(20)
+                color: "#0A000000"  // From PickerStyle.qml
+
+                Row {
+                    id: buttonRow
+                    anchors.fill: parent
+
+                    AbstractButton {
+                        height: parent.height
+                        width: parent.width / 2
+                        action: Action {
+                            iconName: "reload"
+                            onTriggered: board.reset()
+                        }
+
+                        Icon {
+                            anchors {
+                                verticalCenter: parent.verticalCenter
+                                horizontalCenter: parent.horizontalCenter
+                            }
+                            height: parent.height/2
+                            width: height
+                            name: parent.iconName
+                            opacity: parent.enabled ? 1.0 : 0.5
+                        }
                     }
 
-                ]
+                    Rectangle {
+                        color: UbuntuColors.warmGrey
+                        height: parent.height
+                        width: units.dp(1)
+                    }
+
+                    AbstractButton {
+                        height: parent.height
+                        width: parent.width / 2
+                        action: Action {
+                            id: generateAction
+                            iconName: board.intersections ? "media-playlist-shuffle" : "media-playback-start"
+                            onTriggered: board.generate(orderPicker.selectedIndex + orderPicker.min)
+                        }
+                        clip: true
+
+                        Icon {
+                            id: icon1
+                            anchors {
+                                horizontalCenter: parent.horizontalCenter
+                            }
+                            y: parent.height / 4
+                            height: parent.height / 2
+                            width: height
+                            name: "media-playlist-shuffle"
+                        }
+
+                        Icon {
+                            id: icon2
+                            anchors {
+                                horizontalCenter: parent.horizontalCenter
+                            }
+                            y: parent.height
+                            height: parent.height/2
+                            width: height
+                            name: "media-playback-start"
+                            color: UbuntuColors.green
+                        }
+
+                        states: [
+                            State {
+                                when: board.intersections == 0
+                                PropertyChanges {
+                                    target: icon1
+                                    y: -parent.height / 2
+                                }
+                                PropertyChanges {
+                                    target: icon2
+                                    y: parent.height / 4
+                                }
+                            }
+                        ]
+                        transitions: [
+                            Transition {
+                                UbuntuNumberAnimation {
+                                    target: icon1
+                                    properties: "y"
+                                }
+                                UbuntuNumberAnimation {
+                                    target: icon2
+                                    properties: "y"
+                                }
+                            }
+                        ]
+                    }
+                }
             }
 
             Label {
                 id: intersectionsLabel
-                text: i18n.tr("%1 intersections").arg(board.intersections)
-                anchors.centerIn: parent
+                text: i18n.tr("%1 intersection", "%1 intersections", board.intersections).arg(board.intersections)
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    verticalCenter: parent.verticalCenter
+                    topMargin: units.gu(1)
+                    leftMargin: units.gu(1)
+                }
                 font.bold: true
                 color: board.intersections ? Theme.palette.selected.backgroundText : UbuntuColors.green
             }
 
             Label {
-                text: i18n.tr("Graph order")
+                id: difficultyLabel
+                text: i18n.tr("Difficulty")
                 anchors {
-                    right: orderPickerContainer.left
-                    rightMargin: units.gu(1)
-                    verticalCenter: orderPickerContainer.verticalCenter
+                    top: parent.top
+                    topMargin: units.gu(1)
+                    horizontalCenter: orderPickerContainer.horizontalCenter
                 }
             }
 
@@ -103,11 +198,11 @@ MainView {
                 anchors {
                     right: parent.right
                     rightMargin: units.gu(1)
-                    top: parent.top
-                    topMargin: units.gu(1)
+                    top: difficultyLabel.bottom
+                    bottom: parent.bottom
+                    bottomMargin: units.gu(1)
                 }
                 width: units.gu(20)
-                height: mainPage.headerHeight - units.gu(2)
 
                 Picker {
                     id: orderPicker
@@ -141,6 +236,26 @@ MainView {
                     }
                 }
             }
+
+            states: [
+                State {
+                    when: width < units.gu(60)
+                    AnchorChanges {
+                        target: intersectionsLabel
+                        anchors.top: parent.top
+                        anchors.horizontalCenter: buttonContainer.horizontalCenter
+                        anchors.verticalCenter: undefined
+                    }
+                    AnchorChanges {
+                        target: buttonContainer
+                        anchors.top: intersectionsLabel.bottom
+                    }
+                    PropertyChanges {
+                        target: buttonContainer
+                        anchors.topMargin: 0
+                    }
+                }
+            ]
         }
 
         Item {
