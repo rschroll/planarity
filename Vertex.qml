@@ -7,6 +7,8 @@ Item {
 
     property double size: units.gu(3)
     property var edges: []
+    property double originalX
+    property double originalY
 
     width: size
     height: size
@@ -15,6 +17,16 @@ Item {
     transform: Translate {
         x: -size / 2
         y: -size / 2
+    }
+
+    function reset() {
+        x = originalX
+        y = originalY
+    }
+
+    Component.onCompleted: {
+        originalX = x
+        originalY = y
     }
 
     MouseArea {
