@@ -30,7 +30,8 @@ MainView {
         Rectangle {
             id: board
             color: "white"
-            anchors.fill: parent
+            width: parent.width
+            height: parent.height
 
             property var edges
             property int intersections
@@ -155,6 +156,22 @@ MainView {
                 anchors {
                     left: board.left
                     bottom: board.bottom
+                }
+            }
+
+            PinchArea {
+                id: pinch
+                anchors.fill: parent
+
+                pinch {
+                    target: parent
+                    minimumScale: 1
+                    maximumScale: 10
+                    dragAxis: Pinch.XandYAxis
+                    minimumX: width * (1 - parent.scale) / 2
+                    maximumX: width * (parent.scale - 1) / 2
+                    minimumY: height * (1 - parent.scale) / 2
+                    maximumY: height * (parent.scale - 1) / 2
                 }
             }
         }
