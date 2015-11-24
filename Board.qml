@@ -61,12 +61,13 @@ Item {
     }
 
     function countIntersections() {
-        intersections = 0
+        var ints = 0
         var n = edges.length
         for (var i=0; i<n; i++)
             for (var j=i+1; j<n; j++)
                 if (intersect(edges[i], edges[j]))
-                    intersections += 1
+                    ints += 1
+        intersections = ints
     }
 
     function onVertexDragEnd() {
