@@ -275,15 +275,7 @@ MainView {
             }
         }
 
-        // The Page gets resized several times during creation.  Hold off on
-        // laying things out until this settles down.
-        Timer {
-            id: loadingTimer
-            interval: 200
-
-            onTriggered: generateAction.trigger()
-        }
-        onWidthChanged: loadingTimer.restart()
+        Component.onCompleted: generateAction.trigger()
     }
 }
 

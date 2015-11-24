@@ -138,6 +138,47 @@ Item {
         countIntersections()
     }
 
+    function recenterGraph() {
+        if (!vertices)
+            return
+
+        var minX = 1e6,
+                maxX = 0,
+                minY = 1e6,
+                maxY = 0
+        for (var i in vertices) {
+            var v = vertices[i]
+            if (v.x < minX)
+                minX = v.x
+            if (v.x > maxX)
+                maxX = v.x
+            if (v.y < minY)
+                minY = v.y
+            if (v.y > maxY)
+                maxY = v.y
+        }
+
+        var oldWidth = (maxX - minX) / 0.8,  // Give a margin
+                oldHeight = (maxY - minY) / 0.8,
+                oldCenterX = (minX + maxX) / 2,
+                oldCenterY = (minY + maxY) / 2,
+                scale = Math.min(width / oldWidth, height / oldHeight)
+
+        for (var i in vertices) {
+            var v = vertices[i]
+            v.x = (v.x - oldCenterX) * scale + width / 2
+            v.y = (v.y - oldCenterY) * scale + height / 2
+        }
+    }
+
+    onWidthChanged: layoutTimer.restart()
+
+    Timer {
+        id: layoutTimer
+        interval: 200
+        onTriggered: recenterGraph()
+    }
+
     PinchArea {
         id: pinch
         anchors.fill: parent
