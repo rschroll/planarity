@@ -84,7 +84,7 @@ MainView {
 
                     AbstractButton {
                         height: parent.height
-                        width: parent.width / 2
+                        width: parent.width / 3
                         action: Action {
                             iconName: "reload"
                             onTriggered: board.reset()
@@ -109,8 +109,36 @@ MainView {
                     }
 
                     AbstractButton {
+                        id: infoButton
                         height: parent.height
-                        width: parent.width / 2
+                        width: parent.width / 3 - units.dp(2)
+                        action: Action {
+                            iconName: "info"
+                            onTriggered: infoDialog.visible = !infoDialog.visible
+                        }
+
+                        Icon {
+                            id: infoIcon
+                            anchors {
+                                verticalCenter: parent.verticalCenter
+                                horizontalCenter: parent.horizontalCenter
+                            }
+                            height: parent.height/2
+                            width: height
+                            name: parent.iconName
+                            opacity: parent.enabled ? 1.0 : 0.5
+                        }
+                    }
+
+                    Rectangle {
+                        color: UbuntuColors.warmGrey
+                        height: parent.height
+                        width: units.dp(1)
+                    }
+
+                    AbstractButton {
+                        height: parent.height
+                        width: parent.width / 3
                         action: Action {
                             id: generateAction
                             iconName: board.intersections ? "media-playlist-shuffle" : "media-playback-start"
@@ -274,6 +302,59 @@ MainView {
                 }
             }
         }
+
+        Item {
+            id: infoDialog
+            visible: false
+            anchors.fill: parent
+            height: units.gu(100)
+            z: 3
+
+            Flickable {
+                id: infoFlickable
+                anchors.centerIn: parent
+                width: Math.min(parent.width, units.gu(60))
+                height: Math.min(parent.height - 2 * mainPage.headerHeight, infoText.paintedHeight)
+                contentHeight: infoText.paintedHeight
+                clip: true
+
+                InfoText {
+                    id: infoText
+                }
+            }
+
+            Button {
+                anchors {
+                    top: infoFlickable.bottom
+                    topMargin: units.gu(1)
+                    horizontalCenter: parent.horizontalCenter
+                }
+                width: units.gu(20)
+                height: mainPage.headerHeight - units.gu(2)
+                color: "#40d9d9d9" // To match header button over white, but be dark enough to
+                text: "Close"      // force the Button to use dark text.
+
+                onClicked: infoDialog.visible = false
+            }
+        }
+
+        states: [
+            State {
+                when: infoDialog.visible
+                PropertyChanges {
+                    target: header
+                    clip: false
+                }
+                PropertyChanges {
+                    target: boardContainer
+                    visible: false
+                }
+                PropertyChanges {
+                    target: infoIcon
+                    color: UbuntuColors.orange
+                }
+            }
+        ]
 
         Component.onCompleted: generateAction.trigger()
     }
