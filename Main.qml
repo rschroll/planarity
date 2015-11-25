@@ -3,6 +3,8 @@ import QtGraphicalEffects 1.0
 import Ubuntu.Components 1.1
 import Ubuntu.Components.Pickers 1.0
 
+import "database.js" as Database
+
 /*!
     \brief MainView with a Label and Button elements.
 */
@@ -255,12 +257,14 @@ MainView {
                         }
                     }
 
+                    onSelectedIndexChanged: Database.setSetting("difficulty", selectedIndex)
+
                     Component.onCompleted: {
                         var stack = []
                         for (var i=min; i<=max; i++)
                             stack.push(i)
                         model = stack
-                        selectedIndex = 5
+                        selectedIndex = Database.getSetting("difficulty", 0)
                     }
                 }
             }
@@ -356,7 +360,7 @@ MainView {
             }
         ]
 
-        Component.onCompleted: generateAction.trigger()
+        Component.onCompleted: Database.loadGraph(board.createGraph, generateAction.trigger)
     }
 }
 

@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import Ubuntu.Components 1.1
 
+import "database.js" as Database
+
 
 Item {
     id: vertex
@@ -12,6 +14,7 @@ Item {
     property bool selected: mouseArea.pressed || multiSelect
     property bool multiSelect: false
     property int neighborCount: 0
+    property int n
 
     width: size
     height: size
@@ -20,6 +23,10 @@ Item {
     transform: Translate {
         x: -size / 2
         y: -size / 2
+    }
+
+    function saveLoc() {
+        Database.updateVertex(n, x, y)
     }
 
     function reset() {
@@ -41,8 +48,10 @@ Item {
         }
 
         drag.onActiveChanged: {
-            if (!drag.active)
+            if (!drag.active) {
+                saveLoc()
                 board.onVertexDragEnd()
+            }
         }
 
         onPressed: {

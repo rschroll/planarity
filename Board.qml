@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import Ubuntu.Components 1.1
 
+import "database.js" as Database
+
 
 Item {
     id: board
@@ -12,7 +14,7 @@ Item {
     property int intersections
     property bool multiDrag: false
 
-    function createGraph(vertLocs, edgePairs) {
+    function createGraph(vertLocs, edgePairs, fromDatabase) {
         // Destroy edges first, since they reference vertices
         for (var i in edges)
             edges[i].destroy()
@@ -23,7 +25,7 @@ Item {
 
         var vertex = Qt.createComponent("Vertex.qml")
         for (var i=0; i<vertLocs.length; i++) {
-            var v = vertex.createObject(board, {"x": vertLocs[i][0], "y": vertLocs[i][1]})
+            var v = vertex.createObject(board, {"x": vertLocs[i][0], "y": vertLocs[i][1], "n": i})
             vertices.push(v)
         }
 
@@ -37,6 +39,8 @@ Item {
             v2.edges.push(e)
         }
         countIntersections()
+        if (!fromDatabase)
+            Database.saveGraph(vertLocs, edgePairs)
     }
 
     function findIntersect(x1, y1, dx1, dy1, x2, y2, dx2, dy2) {
@@ -261,6 +265,8 @@ Item {
                 if (multiDrag) {
                     multiDrag = false
                     countIntersections()
+                    for (var i in selectedVerts)
+                        selectedVerts[i].saveLoc()
                 } else {
                     selectVertices()
                     points = []
