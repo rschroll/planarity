@@ -20,29 +20,33 @@ Rectangle {
         angle: Math.atan2(edge.v2.y - edge.v1.y, edge.v2.x - edge.v1.x) * 180 / Math.PI
     }
 
+    Connections {
+        target: v1
+        onSelectedChanged: {
+            if (v1.selected)
+                v2.neighborCount += 1
+            else
+                v2.neighborCount -= 1
+        }
+    }
+
+    Connections {
+        target: v2
+        onSelectedChanged: {
+            if (v2.selected)
+                v1.neighborCount += 1
+            else
+                v1.neighborCount -= 1
+        }
+    }
+
     states: [
         State {
-            name: "Selected1"
-            when: v1.state == "Selected"
+            name: "Selected"
+            when: (v1.state == "Selected" || v2.state == "Selected") && v1.state != v2.state
             PropertyChanges {
                 target: edge
                 color: "black"
-            }
-            PropertyChanges {
-                target: v2
-                state: "Neighbor"
-            }
-        },
-        State {
-            name: "Selected2"
-            when: v2.state == "Selected"
-            PropertyChanges {
-                target: edge
-                color: "black"
-            }
-            PropertyChanges {
-                target: v1
-                state: "Neighbor"
             }
         }
     ]

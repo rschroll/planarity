@@ -9,6 +9,9 @@ Item {
     property var edges: []
     property double originalX
     property double originalY
+    property bool selected: mouseArea.pressed || multiSelect
+    property bool multiSelect: false
+    property int neighborCount: 0
 
     width: size
     height: size
@@ -33,7 +36,7 @@ Item {
         id: mouseArea
         anchors.fill: vertex
         drag {
-            target: vertex
+            target: multiSelect ? undefined : vertex
             minimumX: vertex.size / 2
             minimumY: vertex.size / 2
             maximumX: board.width - vertex.size / 2
@@ -44,6 +47,15 @@ Item {
         drag.onActiveChanged: {
             if (!drag.active)
                 board.onVertexDragEnd()
+        }
+
+        onPressed: {
+            if (!multiSelect) {
+                board.unselectVertices()
+            } else {
+                board.multiDrag = true
+                mouse.accepted = false
+            }
         }
     }
 
@@ -65,7 +77,7 @@ Item {
     states: [
         State {
             name: "Selected"
-            when: mouseArea.pressed
+            when: selected
             PropertyChanges {
                 target: rect
                 color: "white"
@@ -73,6 +85,7 @@ Item {
         },
         State {
             name: "Neighbor"
+            when: neighborCount > 0 && !selected
             PropertyChanges {
                 target: rect
                 color: "red"

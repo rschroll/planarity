@@ -10,6 +10,7 @@ Item {
     property var edges
     property var vertices
     property int intersections
+    property bool multiDrag: false
 
     function createGraph(vertLocs, edgePairs) {
         // Destroy edges first, since they reference vertices
@@ -171,6 +172,21 @@ Item {
         }
     }
 
+    function selectVertices() {
+        var ctx = canvas.getContext("2d")
+        for (var i in vertices) {
+            var v = vertices[i]
+            var img = ctx.getImageData(v.x, v.y, 2, 1)
+            if (img.data[2] > 0)
+                v.multiSelect = true
+        }
+    }
+
+    function unselectVertices() {
+        for (var i in vertices)
+            vertices[i].multiSelect = false
+    }
+
     onWidthChanged: layoutTimer.restart()
 
     Timer {
@@ -192,6 +208,67 @@ Item {
             maximumX: width * (parent.scale - 1) / 2
             minimumY: height * (1 - parent.scale) / 2
             maximumY: height * (parent.scale - 1) / 2
+        }
+
+        // Has to be a child of PinchArea for both to work...
+        MouseArea {
+            id: mouseArea
+            anchors.fill: parent
+            property var points: []
+            property var selectedVerts
+
+            onPressed: {
+                if (multiDrag) {
+                    selectedVerts = []
+                    for (var i in vertices)
+                        if (vertices[i].multiSelect)
+                            selectedVerts.push(vertices[i])
+                    points = [mouse.x, mouse.y]
+                } else {
+                    unselectVertices()
+                    points = [[mouse.x, mouse.y]]
+                }
+            }
+            onPositionChanged: {
+                if (multiDrag) {
+                    var dx = mouse.x - points[0],
+                            dy = mouse.y - points[1]
+                    points = [mouse.x, mouse.y]
+                    for (var i in selectedVerts) {
+                        var v = selectedVerts[i]
+                        v.x += dx
+                        v.y += dy
+                    }
+                } else {
+                    points.push([mouse.x, mouse.y])
+                    canvas.requestPaint()
+                }
+            }
+            onReleased: {
+                if (multiDrag) {
+                    multiDrag = false
+                } else {
+                    selectVertices()
+                    points = []
+                    canvas.requestPaint()
+                }
+            }
+        }
+    }
+
+    Canvas {
+        id: canvas
+        anchors.fill: parent
+
+        onPaint: {
+            var ctx = canvas.getContext("2d")
+            ctx.fillStyle = "#400000ff"
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            ctx.beginPath()
+            for (var i in mouseArea.points)
+                ctx.lineTo(mouseArea.points[i][0], mouseArea.points[i][1])
+            ctx.fill()
         }
     }
 }
