@@ -256,6 +256,7 @@ Item {
             onReleased: {
                 if (multiDrag) {
                     multiDrag = false
+                    countIntersections()
                 } else {
                     selectVertices()
                     points = []
