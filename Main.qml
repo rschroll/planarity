@@ -39,6 +39,46 @@ MainView {
             color: "white"
         }
 
+        Icon {
+            id: tick
+            anchors.centerIn: parent
+            width: Math.min(parent.width, parent.height)
+            height: width
+            name: "tick"
+            color: UbuntuColors.green
+            opacity: 0
+            visible: opacity > 0
+
+            states: [
+                State {
+                    name: "Completed"
+                    when: board.intersections == 0
+                }
+            ]
+            transitions: [
+                Transition {
+                    from: ""
+                    to: "Completed"
+                    SequentialAnimation {
+                        UbuntuNumberAnimation {
+                            target: tick
+                            property: "opacity"
+                            from: 0
+                            to: 1
+                        }
+                        UbuntuNumberAnimation {
+                            target: tick
+                            property: "opacity"
+                            from: 1
+                            to: 0
+                            duration: 2000
+                        }
+                    }
+                }
+
+            ]
+        }
+
         Rectangle {
             id: header
             anchors {
