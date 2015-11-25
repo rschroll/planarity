@@ -48,9 +48,12 @@ function saveGraph(verts, edges) {
     });
 }
 
-function updateVertex(id, x, y) {
+function updateVertices(verts) {
     openDatabase().transaction(function (tx) {
-        tx.executeSql("REPLACE INTO Vertices(id, x, y) VALUES(?, ?, ?)", [id, x, y]);
+        for (var i in verts) {
+            var v = verts[i];
+            tx.executeSql("UPDATE Vertices SET x = ?, y = ? WHERE id = ?", [v.x, v.y, v.n]);
+        }
     });
 }
 

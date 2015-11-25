@@ -265,8 +265,7 @@ Item {
                 if (multiDrag) {
                     multiDrag = false
                     countIntersections()
-                    for (var i in selectedVerts)
-                        selectedVerts[i].saveLoc()
+                    Database.updateVertices(selectedVerts)
                 } else {
                     selectVertices()
                     points = []

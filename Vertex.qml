@@ -25,10 +25,6 @@ Item {
         y: -size / 2
     }
 
-    function saveLoc() {
-        Database.updateVertex(n, x, y)
-    }
-
     function reset() {
         x = originalX
         y = originalY
@@ -49,8 +45,8 @@ Item {
 
         drag.onActiveChanged: {
             if (!drag.active) {
-                saveLoc()
                 board.onVertexDragEnd()
+                Database.updateVertices([vertex])
             }
         }
 
