@@ -335,11 +335,13 @@ MainView {
                 }
                 width: units.gu(20)
                 height: mainPage.headerHeight - units.gu(2)
-                color: "#40d9d9d9" // To match header button over white, but be dark enough to
-                text: "Close"      // force the Button to use dark text.
+                color: "#40d9d9d9"    // To match header button over white, but be dark enough to
+                text: i18n.tr("Play") // force the Button to use dark text.
 
                 onClicked: infoDialog.visible = false
             }
+
+            onVisibleChanged: Database.setSetting("showInfo", visible)
         }
 
         states: [
@@ -360,7 +362,10 @@ MainView {
             }
         ]
 
-        Component.onCompleted: Database.loadGraph(board.createGraph, generateAction.trigger)
+        Component.onCompleted: {
+            infoDialog.visible = (Database.getSetting("showInfo", true) != 0)
+            Database.loadGraph(board.createGraph, generateAction.trigger)
+        }
     }
 }
 

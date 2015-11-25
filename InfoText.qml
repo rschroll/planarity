@@ -7,7 +7,7 @@ Text {
     textFormat: Text.RichText
     wrapMode: Text.Wrap
     color: Theme.palette.selected.backgroundText
-    text: "<h1 align='center'>Planarity</h1><p>" +
+    text: "<h1 align='center'>Planarity</h1><p>&nbsp;</p><p>" +
           i18n.tr("Untangle the graph: Drag the vertices to get rid of crossed lines. " +
                   "All graphs can be completely untangled, but it may take some time!") +
           "</p><p>" +
