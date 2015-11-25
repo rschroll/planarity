@@ -129,17 +129,26 @@ Item {
         return verts
     }
 
+    function resetView() {
+        scale = 1
+        x = 0
+        y = 0
+    }
+
     function generate(n) {
+        resetView()
         createGraph(circleVerts(n * (n - 1) / 2), generateGraph(n))
     }
 
     function reset() {
         for (var i in vertices)
             vertices[i].reset()
+        recenterGraph()  // In case we've rotated the screen relative to the initial layout
         countIntersections()
     }
 
     function recenterGraph() {
+        resetView()
         if (!vertices)
             return
 
