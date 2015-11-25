@@ -129,14 +129,7 @@ Item {
         return verts
     }
 
-    function resetView() {
-        scale = 1
-        x = 0
-        y = 0
-    }
-
     function generate(n) {
-        resetView()
         createGraph(circleVerts(n * (n - 1) / 2), generateGraph(n))
     }
 
@@ -148,7 +141,6 @@ Item {
     }
 
     function recenterGraph() {
-        resetView()
         if (!vertices)
             return
 
@@ -196,6 +188,20 @@ Item {
             vertices[i].multiSelect = false
     }
 
+    function rescaleView() {
+        // Move the vertices so we can reset the scale and the offset of the board
+        var dx = x + width * (1 - scale) / 2,
+                dy = y + height * (1 - scale) / 2
+        for (var i in vertices) {
+            var v = vertices[i]
+            v.x = scale * v.x + dx
+            v.y = scale * v.y + dy
+        }
+        scale = 1
+        x = 0
+        y = 0
+    }
+
     onWidthChanged: layoutTimer.restart()
 
     Timer {
@@ -210,14 +216,12 @@ Item {
 
         pinch {
             target: parent
-            minimumScale: 1
+            minimumScale: 0.1
             maximumScale: 10
             dragAxis: Pinch.XandYAxis
-            minimumX: width * (1 - parent.scale) / 2
-            maximumX: width * (parent.scale - 1) / 2
-            minimumY: height * (1 - parent.scale) / 2
-            maximumY: height * (parent.scale - 1) / 2
         }
+
+        onPinchFinished: rescaleView()
 
         // Has to be a child of PinchArea for both to work...
         MouseArea {

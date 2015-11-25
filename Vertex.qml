@@ -37,10 +37,6 @@ Item {
         anchors.fill: vertex
         drag {
             target: multiSelect ? undefined : vertex
-            minimumX: vertex.size / 2
-            minimumY: vertex.size / 2
-            maximumX: board.width - vertex.size / 2
-            maximumY: board.height - vertex.size / 2
             threshold: 0
         }
 
