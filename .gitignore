@@ -1,0 +1,4 @@
+.ubuntu-sdk-deploy/
+*.user
+*.click
+junk/
