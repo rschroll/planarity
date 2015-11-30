@@ -1,3 +1,9 @@
+/* Copyright 2015 Robert Schroll
+ *
+ * This file is part of Beru and is distributed under the terms of
+ * the GPL. See the file LICENSE for full details.
+ */
+
 import QtQuick 2.0
 import Ubuntu.Components 1.1
 

@@ -1,3 +1,9 @@
+/* Copyright 2015 Robert Schroll
+ *
+ * This file is part of Beru and is distributed under the terms of
+ * the GPL. See the file LICENSE for full details.
+ */
+
 .pragma library
 .import QtQuick.LocalStorage 2.0 as Sql
 
