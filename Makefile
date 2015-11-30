@@ -42,7 +42,7 @@ check:
 build-translations: $(MO_FILES)
 
 po/planarity.pot: $(QMLJS_FILES)
-	mkdir -p $(CURDIR)/po && xgettext -o po/planarity.pot --qt --c++ --add-comments=TRANSLATORS --keyword=tr --keyword=tr:1,2 $(QMLJS_FILES) --from-code=UTF-8
+	mkdir -p $(CURDIR)/po && xgettext -o po/planarity.pot --qt -L javascript --add-comments=/ --keyword=tr --keyword=tr:1,2 $(QMLJS_FILES) --from-code=UTF-8
 
 $(TRANSLATION_ROOT)/share/locale/%/LC_MESSAGES/$(APP_ID).mo: po/%.po
 	mkdir -p $(TRANSLATION_ROOT)/share/locale/$*/LC_MESSAGES && msgfmt -o $(@) $(<)
