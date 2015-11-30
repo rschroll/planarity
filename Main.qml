@@ -363,7 +363,7 @@ MainView {
             Flickable {
                 id: infoFlickable
                 anchors.centerIn: parent
-                width: Math.min(parent.width, units.gu(60))
+                width: Math.min(parent.width - units.gu(2), units.gu(60))
                 height: Math.min(parent.height - 2 * mainPage.headerHeight, infoText.paintedHeight)
                 contentHeight: infoText.paintedHeight
                 clip: true
