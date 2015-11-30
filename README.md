@@ -7,7 +7,7 @@ this is guaranteed to be possible.  It may not be easy, though.
 
 Planarity was written for Ubuntu Touch.  It is a pure-QML application,
 so it should run easily on any platform that supports QML.  Launch it
-using the desktop file or with `qmlscene Main.qml`.
+using the desktop file or with `qmlscene ui/Main.qml`.
 
 Credits
 -------

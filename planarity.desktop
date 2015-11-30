@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=planarity
-Exec=qmlscene $@ Main.qml
+Exec=qmlscene $@ ui/Main.qml
 Icon=planarity.png
 Terminal=false
 Type=Application
